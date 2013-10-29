@@ -109,6 +109,34 @@ describe('usemin', function () {
         assert.ok(changed.match(/<script src="\/scripts\/plugins\.12345\.js">/));
       });
 
+    it('should replace absolute files with prefix ', function () {
+        grunt.file.mkdir('build');
+        grunt.file.mkdir('foo');
+        grunt.file.mkdir('foo/images');
+        grunt.file.mkdir('foo/images/misc');
+        grunt.file.write('foo/images/test.23012.png', 'foo');
+        grunt.file.write('foo/images/bar.23012.png', 'foo');
+        grunt.file.write('foo/images/misc/test.2a436.png', 'foo');
+        grunt.file.mkdir('bar');
+        grunt.file.mkdir('bar/scripts');
+        grunt.file.write('bar/scripts/plugins.12345.js', 'bar');
+        grunt.file.write('bar/scripts/amd-app.6789.js', 'bar');
+        grunt.file.copy(path.join(__dirname, 'fixtures/htmlprocessor_absolute.html'), 'build/index.html');
+
+        grunt.log.muted = true;
+        grunt.config.init();
+        grunt.config('usemin', {html: 'build/index.html',  options: { assetsDirs: ['foo', 'bar'], prefix: 'http://example.com' }});
+        grunt.task.run('usemin');
+        grunt.task.start();
+
+        var changed = grunt.file.read('build/index.html');
+
+        assert.ok(changed.match(/<img src="http:\/\/example.com\/images\/test\.23012\.png">/));
+        assert.ok(changed.match(/<img src="http:\/\/example.com\/\/images\/bar\.23012\.png">/));
+        assert.ok(changed.match(/<img src="http:\/\/example.com\/images\/misc\/test\.2a436\.png">/));
+        assert.ok(changed.match(/<script src="http:\/\/example.com\/scripts\/plugins\.12345\.js">/));
+      });
+
   });
 
   describe('relative paths', function () {

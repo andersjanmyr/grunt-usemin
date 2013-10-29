@@ -129,7 +129,7 @@ module.exports = function (grunt) {
         grunt.log.subhead('Processing as ' + options.type.toUpperCase() + ' - ' + filename);
 
         // Our revved version locator
-        var content = handler.process(filename, options.assetsDirs);
+        var content = handler.process(filename, options.assetsDirs, options.prefix);
 
         // write the new content to disk
         grunt.file.write(filename, content);

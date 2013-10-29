@@ -230,10 +230,12 @@ var block = {
 
 ## The usemin task
 
-The `usemin` task has 2 actions:
+The `usemin` task has 3 actions:
 
 - First it replaces all the blocks with a single "summary" line, pointing at a file creating by the transformation flow.
 - Then it looks for references to assets (i.e. images, scripts, ...), and tries to replace them with their revved version if it can find one on disk
+- When it replaces the assets it may also insert a prefix before all absolute
+  assets. This allows us to serve assets from a different server.
 
 ### Finding assets
 
@@ -329,6 +331,23 @@ which attributes are the original file and associated value is the transformed f
 }
 ```
 This map will be used instead of looking for file on the disk.
+
+#### prefix
+
+Type: 'String'
+Default: Empty
+
+A prefix to insert in front of all absolute URLs in order to support serving
+assets from a different server or a CDN.
+
+```js
+usemin: {
+  options: {
+    prefix: 'http://cdn.example.com'
+    }
+  }
+}
+```
 
 ## On directories
 The main difference to be kept in mind, regarding directories and tasks, is that for `useminPrepare`, the directories needs to indicate the input, transient and output path needed to output the right configuration for the processors pipeline, whereas in the case of `usemin` it only reflects the output paths, as all the needed assets should have been output to the destination dir (either transformed or just copied)
